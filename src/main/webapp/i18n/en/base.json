@@ -1,0 +1,23 @@
+{
+    "itgmApp": {
+        "base" : {
+            "home": {
+                "title": "Bases",
+                "createLabel": "Create a new Base",
+                "createOrEditLabel": "Create or edit a Base"
+            },
+            "created": "A new Base is created with identifier {{ param }}",
+            "updated": "A Base is updated with identifier {{ param }}",
+            "deleted": "A Base is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Base {{ id }}?"
+            },
+            "detail": {
+                "title": "Base"
+            },
+            "nome": "Nome",
+            "local": "Local",
+            "projeto": "Projeto"
+        }
+    }
+}
