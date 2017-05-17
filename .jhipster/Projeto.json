@@ -1,0 +1,32 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "projeto"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "nome",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "caminho",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "arquivos",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170513184159",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "projeto",
+    "pagination": "pagination"
+}

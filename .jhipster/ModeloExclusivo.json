@@ -1,0 +1,36 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "modelo",
+            "otherEntityName": "modelo",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "cenario",
+            "otherEntityName": "cenario",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "nome",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "mapeamento",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "palpite",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170513190428",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "modelo_exclusivo",
+    "pagination": "pagination"
+}

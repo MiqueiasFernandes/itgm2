@@ -1,0 +1,53 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "customize"
+        },
+        {
+            "relationshipName": "projeto",
+            "otherEntityName": "projeto",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "customize"
+        },
+        {
+            "relationshipName": "cenario",
+            "otherEntityName": "cenario",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "customize"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "sidebar",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "color",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "avatar",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "image"
+        },
+        {
+            "fieldName": "desktop",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170513210621",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "customize",
+    "pagination": "pagination"
+}

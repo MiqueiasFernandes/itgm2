@@ -9,6 +9,7 @@ export class Principal {
     private userIdentity: any;
     private authenticated = false;
     private authenticationState = new Subject<any>();
+    private serverEndereco = null;
 
     constructor(
         private account: AccountService,
@@ -94,6 +95,17 @@ export class Principal {
     }
 
     getImageUrl(): String {
-        return this.isIdentityResolved() ? this.userIdentity.imageUrl : null;
+        if(!this.serverEndereco) {
+            this.account.getEndereco().subscribe(
+                (endereco: string) => {
+                    this.serverEndereco = endereco;
+                },
+                () => {
+                    alert("ERRO AO BUSCAR ENDEREÇO DO SERVIDOR!")
+                }
+            );
+        }
+        return ((this.isIdentityResolved() && this.serverEndereco) ?
+            (this.serverEndereco + this.userIdentity.imageUrl) : null);
     }
 }

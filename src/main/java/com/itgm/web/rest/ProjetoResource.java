@@ -22,6 +22,9 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+
+import com.itgm.service.jriaccess.Itgmrest;
+
 /**
  * REST controller for managing Projeto.
  */
@@ -32,7 +35,7 @@ public class ProjetoResource {
     private final Logger log = LoggerFactory.getLogger(ProjetoResource.class);
 
     private static final String ENTITY_NAME = "projeto";
-        
+
     private final ProjetoRepository projetoRepository;
 
     public ProjetoResource(ProjetoRepository projetoRepository) {
@@ -53,7 +56,25 @@ public class ProjetoResource {
         if (projeto.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new projeto cannot already have an ID")).body(null);
         }
+
+        if (projeto.getUser() == null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Informe o usuario para criar o novo projeto.")).body(null);
+        }
+
         Projeto result = projetoRepository.save(projeto);
+
+        if (Itgmrest.createNew(result.getUser(), result.getNome(), "*", "*", null, result.toString())) {
+            String codname = Itgmrest.getCodNome(result.getUser());
+            if (((String) Itgmrest.listFiles(codname + "/*/*/*"))
+                .contains(codname + "/" + result.getNome() + "/" + ".info")) {
+                result.setCaminho(codname + "/" + result.getNome() + "/");
+                result.setArquivos(Itgmrest.listFiles(codname + "/" + result.getNome() + "/*/*"));
+                result = updateProjeto(result).getBody();
+            } else {
+                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "ITGMRestfalhou", "Erro ao tentar criar novo projeto.")).body(null);
+            }
+        }
+
         return ResponseEntity.created(new URI("/api/projetos/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -91,7 +112,7 @@ public class ProjetoResource {
     @Timed
     public ResponseEntity<List<Projeto>> getAllProjetos(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Projetos");
-        Page<Projeto> page = projetoRepository.findAll(pageable);
+        Page<Projeto> page = projetoRepository.findByUserIsCurrentUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projetos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -120,6 +141,14 @@ public class ProjetoResource {
     @Timed
     public ResponseEntity<Void> deleteProjeto(@PathVariable Long id) {
         log.debug("REST request to delete Projeto : {}", id);
+        Projeto projeto = getProjeto(id).getBody();
+        Itgmrest.removeDIR(
+            Itgmrest.getCodNome(projeto.getUser()),
+            projeto.getNome(),
+            null,
+            null,
+            null,
+            null);
         projetoRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }

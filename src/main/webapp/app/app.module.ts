@@ -21,8 +21,14 @@ import {
     ProfileService,
     PageRibbonComponent,
     ActiveMenuDirective,
-    ErrorComponent
+    ErrorComponent,
+    ShareComponent,
+    ShareService,
+    FabAddComponent,
+    SidebarComponent,
+    SidebarService
 } from './layouts';
+
 
 @NgModule({
     imports: [
@@ -41,13 +47,21 @@ import {
         ErrorComponent,
         PageRibbonComponent,
         ActiveMenuDirective,
-        FooterComponent
+        FooterComponent,
+        ShareComponent,
+        FabAddComponent,
+        SidebarComponent
+    ],
+    entryComponents: [
+        ShareComponent
     ],
     providers: [
         ProfileService,
         customHttpProvider(),
         PaginationConfig,
-        UserRouteAccessService
+        UserRouteAccessService,
+        SidebarService,
+        ShareService,
     ],
     bootstrap: [ JhiMainComponent ]
 })

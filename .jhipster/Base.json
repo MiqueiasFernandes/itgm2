@@ -1,0 +1,26 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "projeto",
+            "otherEntityName": "projeto",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "nome",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "local",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170513190158",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "base",
+    "pagination": "pagination"
+}

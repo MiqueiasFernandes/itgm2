@@ -39,6 +39,7 @@ export class ModeloService {
     delete(id: number): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${id}`);
     }
+
     private createRequestOption(req?: any): BaseRequestOptions {
         const options: BaseRequestOptions = new BaseRequestOptions();
         if (req) {
@@ -53,5 +54,17 @@ export class ModeloService {
             options.search = params;
         }
         return options;
+    }
+
+    getAllModelos(): Observable<Modelo[]> {
+        return this.query({
+            page: 0,
+            size: 100,
+            sort: ['id']
+        }).map(
+            (res: Response) => {
+                const modelos: Modelo[] = res.json();
+                return modelos;
+            });
     }
 }

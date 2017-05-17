@@ -7,13 +7,16 @@ import { ProfileService } from '../profiles/profile.service'; // FIXME barrel do
 import { JhiLanguageHelper, Principal, LoginModalService, LoginService } from '../../shared';
 
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
+import {Compartilhar} from '../../entities/compartilhar/compartilhar.model';
+import {ShareService} from '../share/share.service';
+import {SidebarService} from '../sidebar/sidebar.service';
 
 @Component({
     selector: 'jhi-navbar',
     templateUrl: './navbar.component.html',
     styleUrls: [
         'navbar.scss'
-    ]
+    ],
 })
 export class NavbarComponent implements OnInit {
 
@@ -23,6 +26,9 @@ export class NavbarComponent implements OnInit {
     swaggerEnabled: boolean;
     modalRef: NgbModalRef;
     version: string;
+    compartilhamentos: Compartilhar[];
+    bellN  = 0;
+
 
     constructor(
         private loginService: LoginService,
@@ -31,7 +37,9 @@ export class NavbarComponent implements OnInit {
         private principal: Principal,
         private loginModalService: LoginModalService,
         private profileService: ProfileService,
-        private router: Router
+        private router: Router,
+        private sidebarService: SidebarService,
+        private shareService: ShareService,
     ) {
         this.version = DEBUG_INFO_ENABLED ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
@@ -47,6 +55,13 @@ export class NavbarComponent implements OnInit {
             this.inProduction = profileInfo.inProduction;
             this.swaggerEnabled = profileInfo.swaggerEnabled;
         });
+
+        this.shareService.shareObserver$.subscribe((compartilhamentos: Compartilhar[]) =>{
+            this.compartilhamentos = compartilhamentos;
+            this.bellN = compartilhamentos.length;
+        });
+
+        this.shareService.consultarCompartilhamentos();
     }
 
     changeLanguage(languageKey: string) {
@@ -77,5 +92,14 @@ export class NavbarComponent implements OnInit {
 
     getImageUrl() {
         return this.isAuthenticated() ? this.principal.getImageUrl() : null;
+    }
+
+    toogleSidebar() {
+        this.sidebarService.toogleSidebar();
+    }
+
+    receberCompartilhamento(compartilhar: Compartilhar){
+        this.collapseNavbar();
+        this.shareService.receber(compartilhar);
     }
 }

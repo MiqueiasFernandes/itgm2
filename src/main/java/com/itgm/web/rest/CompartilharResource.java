@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.itgm.domain.Compartilhar;
 
 import com.itgm.repository.CompartilharRepository;
+import com.itgm.service.jriaccess.Itgmrest;
 import com.itgm.web.rest.util.HeaderUtil;
 import com.itgm.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -32,7 +33,7 @@ public class CompartilharResource {
     private final Logger log = LoggerFactory.getLogger(CompartilharResource.class);
 
     private static final String ENTITY_NAME = "compartilhar";
-        
+
     private final CompartilharRepository compartilharRepository;
 
     public CompartilharResource(CompartilharRepository compartilharRepository) {
@@ -54,6 +55,7 @@ public class CompartilharResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new compartilhar cannot already have an ID")).body(null);
         }
         Compartilhar result = compartilharRepository.save(compartilhar);
+        result = tratarCompartilhamento(result);
         return ResponseEntity.created(new URI("/api/compartilhars/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -91,7 +93,7 @@ public class CompartilharResource {
     @Timed
     public ResponseEntity<List<Compartilhar>> getAllCompartilhars(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Compartilhars");
-        Page<Compartilhar> page = compartilharRepository.findAll(pageable);
+        Page<Compartilhar> page = compartilharRepository.findByDestinatarioIsCurrentUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/compartilhars");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -122,6 +124,76 @@ public class CompartilharResource {
         log.debug("REST request to delete Compartilhar : {}", id);
         compartilharRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+
+    private Compartilhar tratarCompartilhamento(Compartilhar result){
+
+        switch (result.getTipo()) {
+            case "Base":
+                if(result.getStatus() > 4 && result.getStatus() < 10){
+                    String ret =  Itgmrest.receberCompartilhamento(
+                        result.getDestinatario().getLogin(),
+                        result.getCodigo()
+                    );
+                    if( !ret.equals(result.getCodigo())){
+                        System.out.println("#######################" +
+                            "########################ERROR IMPOSSIVEL COPIAR:"
+                            + ret + " != " + result.getCodigo());
+                        return null;
+                    }else{
+                        Itgmrest.removeDIR(
+                            result.getDestinatario().getLogin(),
+                            "*",
+                            "*",
+                            "*",
+                            result.getCodigo() + "/",
+                            "share/");
+                        System.out.println("#######################" +
+                            "######################## COMPARTILHAMENTO ACEITO TOKEN :"
+                            + result.getCodigo());
+                    }
+                    return result;
+                }
+                try {
+                    result.setCodigo(
+                        Itgmrest.criarCompartilhamento(
+                            result.getCodigo(),
+                            result.getDestinatario().getLogin())
+                    );
+                    return updateCompartilhar(result).getBody();
+                }catch (Exception ex){
+                    return null;
+                }
+            case "Modelo":
+                return result;
+            default:
+                break;
+        }
+
+        return null;
+    }
+
+
+    @GetMapping("/compartilhars/aceitar/{id}")
+    @Timed
+    public ResponseEntity<Compartilhar> createFile (
+        @PathVariable Long id,
+        @RequestParam("conteudo") String conteudo) throws URISyntaxException {
+        log.debug("REST request to create file Compartilhar : {}", id);
+        Compartilhar compartilhar = compartilharRepository.findOne(id);
+
+        if (Itgmrest.createFileCompartilhamento(
+            compartilhar.getDestinatario().getLogin(),
+            compartilhar.getCodigo(),
+            conteudo)) {
+            compartilhar.setStatus(5);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, compartilhar.getId().toString()))
+                .body(tratarCompartilhamento(compartilhar));
+        }
+        else
+            return null;
     }
 
 }

@@ -1,0 +1,26 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "projeto",
+            "otherEntityName": "projeto",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "nome",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "caminho",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170513185222",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "cenario",
+    "pagination": "pagination"
+}

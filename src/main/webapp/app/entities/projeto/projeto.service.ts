@@ -3,12 +3,13 @@ import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/ht
 import { Observable } from 'rxjs/Rx';
 
 import { Projeto } from './projeto.model';
+
 @Injectable()
 export class ProjetoService {
 
     private resourceUrl = 'api/projetos';
 
-    constructor(private http: Http) { }
+    constructor( private http: Http ) {}
 
     create(projeto: Projeto): Observable<Projeto> {
         const copy: Projeto = Object.assign({}, projeto);
@@ -39,6 +40,7 @@ export class ProjetoService {
     delete(id: number): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${id}`);
     }
+
     private createRequestOption(req?: any): BaseRequestOptions {
         const options: BaseRequestOptions = new BaseRequestOptions();
         if (req) {

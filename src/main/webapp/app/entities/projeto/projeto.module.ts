@@ -16,6 +16,8 @@ import {
     projetoPopupRoute,
     ProjetoResolvePagingParams,
 } from './';
+import { FabAddProjetoComponent } from './fab-add-projeto/fab-add-projeto.component';
+import { SelecionarProjetoComponent } from './selecionar-projeto/selecionar-projeto.component';
 
 const ENTITY_STATES = [
     ...projetoRoute,
@@ -35,6 +37,8 @@ const ENTITY_STATES = [
         ProjetoDeleteDialogComponent,
         ProjetoPopupComponent,
         ProjetoDeletePopupComponent,
+        FabAddProjetoComponent,
+        SelecionarProjetoComponent,
     ],
     entryComponents: [
         ProjetoComponent,
@@ -42,6 +46,8 @@ const ENTITY_STATES = [
         ProjetoPopupComponent,
         ProjetoDeleteDialogComponent,
         ProjetoDeletePopupComponent,
+        FabAddProjetoComponent,
+        SelecionarProjetoComponent
     ],
     providers: [
         ProjetoService,

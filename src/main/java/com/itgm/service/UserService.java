@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import java.util.*;
 
+
+import com.itgm.service.jriaccess.Itgmrest;
+
 /**
  * Service class for managing users.
  */
@@ -108,6 +111,7 @@ public class UserService {
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
         log.debug("Created Information for User: {}", newUser);
+    Itgmrest.createUser(newUser);
         return newUser;
     }
 
@@ -189,6 +193,13 @@ public class UserService {
     }
 
     public void deleteUser(String login) {
+    Itgmrest.removeDIR(
+                    login,
+                    null,
+                    null,
+                   null,
+                    null,
+                   null);
         jdbcTokenStore.findTokensByUserName(login).forEach(token ->
             jdbcTokenStore.removeAccessToken(token));
         userRepository.findOneByLogin(login).ifPresent(user -> {

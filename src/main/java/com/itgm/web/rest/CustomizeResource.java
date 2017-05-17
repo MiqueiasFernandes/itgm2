@@ -32,7 +32,7 @@ public class CustomizeResource {
     private final Logger log = LoggerFactory.getLogger(CustomizeResource.class);
 
     private static final String ENTITY_NAME = "customize";
-        
+
     private final CustomizeRepository customizeRepository;
 
     public CustomizeResource(CustomizeRepository customizeRepository) {
@@ -91,7 +91,7 @@ public class CustomizeResource {
     @Timed
     public ResponseEntity<List<Customize>> getAllCustomizes(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Customizes");
-        Page<Customize> page = customizeRepository.findAll(pageable);
+        Page<Customize> page = customizeRepository.findByUserIsCurrentUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/customizes");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

@@ -15,6 +15,7 @@ import {
     basePopupRoute,
     BaseResolvePagingParams,
 } from './';
+import { FabAddBaseComponent } from './fab-add-base/fab-add-base.component';
 
 const ENTITY_STATES = [
     ...baseRoute,
@@ -33,6 +34,7 @@ const ENTITY_STATES = [
         BaseDeleteDialogComponent,
         BasePopupComponent,
         BaseDeletePopupComponent,
+        FabAddBaseComponent,
     ],
     entryComponents: [
         BaseComponent,
@@ -40,6 +42,7 @@ const ENTITY_STATES = [
         BasePopupComponent,
         BaseDeleteDialogComponent,
         BaseDeletePopupComponent,
+        FabAddBaseComponent
     ],
     providers: [
         BaseService,

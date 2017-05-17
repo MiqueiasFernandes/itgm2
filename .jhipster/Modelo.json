@@ -1,0 +1,56 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "modelo"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "nome",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "cor",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "formula",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "funcao",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "variaveis",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "palpite",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "parametros",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "requires",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "codigo",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170513184841",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "modelo",
+    "pagination": "pagination"
+}

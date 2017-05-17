@@ -22,6 +22,10 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.web.multipart.MultipartFile;
+import com.itgm.service.jriaccess.Itgmrest;
+import com.itgm.domain.Projeto;
+
 /**
  * REST controller for managing Base.
  */
@@ -32,7 +36,7 @@ public class BaseResource {
     private final Logger log = LoggerFactory.getLogger(BaseResource.class);
 
     private static final String ENTITY_NAME = "base";
-        
+
     private final BaseRepository baseRepository;
 
     public BaseResource(BaseRepository baseRepository) {
@@ -53,7 +57,33 @@ public class BaseResource {
         if (base.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new base cannot already have an ID")).body(null);
         }
+
+        if (base.getProjeto() == null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "invaliduser", "Informe o projeto para criar o novo cenario.")).body(null);
+        }
+
         Base result = baseRepository.save(base);
+
+        Projeto projeto = result.getProjeto();
+
+        if (Itgmrest.createNew(
+            projeto.getUser(),
+            projeto.getNome(),
+            "*",
+            "*",
+            "bases/" + result.getId() + "/",
+            result.toString())) {
+            String codname = Itgmrest.getCodNome(projeto.getUser());
+            String comp = codname + "/" + projeto.getNome();
+            if (((String) Itgmrest.listFiles(comp + "/*/*"))
+                .contains(comp + "/" + "bases/" + result.getId() + "/" + ".info")) {
+                result.setLocal(comp + "/" + "bases/" + result.getId() + "/");
+                result = updateBase(result).getBody();
+            } else {
+                return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "ITGMRestfalhou", "Erro ao tentar criar nova base.")).body(null);
+            }
+        }
+
         return ResponseEntity.created(new URI("/api/bases/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -91,7 +121,7 @@ public class BaseResource {
     @Timed
     public ResponseEntity<List<Base>> getAllBases(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Bases");
-        Page<Base> page = baseRepository.findAll(pageable);
+        Page<Base> page = baseRepository.findByUserIsCurrentUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/bases");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -120,8 +150,119 @@ public class BaseResource {
     @Timed
     public ResponseEntity<Void> deleteBase(@PathVariable Long id) {
         log.debug("REST request to delete Base : {}", id);
+        Base base = getBase(id).getBody();
+        Projeto projeto = base.getProjeto();
+        Itgmrest.removeDIR(
+            Itgmrest.getCodNome(projeto.getUser()),
+            projeto.getNome(),
+            "*",
+            "*",
+            base.getId() + "/",
+            "bases/");
+
         baseRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @PostMapping("/bases/temp")
+    public ResponseEntity<String> baseTempUpload(
+        @RequestParam("file") MultipartFile file,
+        @RequestParam("usuario") String usuario,
+        @RequestParam("projeto") String projeto,
+        @RequestParam("nome") String nome,
+        @RequestParam("id") String id
+    ) {
+        if (!Itgmrest.sendFile(
+            usuario + "/" + projeto + "/*/*/" + nome,
+            "bases/" + id + "-temp/", (file))) {
+            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+        }
+
+        String codigo = "load('" + nome + "')\nwrite(gsub(\", \", \",\", " +
+            "toString(subset((data.frame(l = sapply(ls(), " +
+            "function(X){if (T %in% (c(\"data.table\", \"data.frame\") " +
+            "%in% class(get(X)))) return(T) ; return(F)}), m = ls())), l == T)$m)), " +
+            "\"variaveis\")";
+
+        Itgmrest.executarBatch(usuario + "/" + projeto + "/bases/" + id + "-temp/", codigo);
+
+        return new ResponseEntity<String>(
+            "{\"sucesso\":\"base enviada\"}", HttpStatus.OK);
+    }
+
+    @PostMapping("/bases/send")
+    public ResponseEntity<String> baseUpload(
+        @RequestParam("file") MultipartFile file,
+        @RequestParam("usuario") String usuario,
+        @RequestParam("projeto") String projeto,
+        @RequestParam("nome") String nome,
+        @RequestParam("id") String id,
+        @RequestParam("extra") String extra
+    ) {
+        if (!Itgmrest.sendFile(usuario + "/" + projeto + "/*/*/" + nome, "bases/" + id + "/", (file))) {
+            return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+        }
+        ///obter campos da base
+        String codigo = "write(gsub(', ', ',', toString(names(read.csv('" + nome + "', sep='" + extra + "')))), 'campos')";
+
+        if(!nome.endsWith(".csv")){
+            Itgmrest.removeDIR(
+                usuario,
+                projeto,
+                "*",
+                "*",
+                "*-temp/",
+                "bases/"
+            );
+            codigo = "load('" + nome + "')\nwrite(gsub(', ', ',', toString(names(" + extra + "))), 'campos')";
+        }
+
+        Itgmrest.executarBatch(usuario + "/" + projeto + "/bases/" + id + "/", codigo);
+
+        return new ResponseEntity<String>(
+            "{\"sucesso\":\"base enviada\"}", HttpStatus.OK);
+    }
+
+    @GetMapping("/bases/campos/{id}")
+    @Timed
+    public ResponseEntity<String> getBaseFields(@PathVariable Long id) {
+        log.debug("REST request to get fields of Base : {}", id);
+        Base base = baseRepository.findOne(id);
+        String url = base.getProjeto().getUser().getLogin() + "/" + base.getProjeto().getNome() + "/*/*/campos";
+        String subdir =  "bases/" + base.getId() + "/";
+        return getCSV(url, subdir);
+    }
+
+    @GetMapping("/bases/variaveis/{usuario}/{projeto}/{id}")
+    @Timed
+    public ResponseEntity<String> getBaseVariaveis(
+        @PathVariable String usuario,
+        @PathVariable String projeto,
+        @PathVariable String id
+    ) {
+        log.debug("REST request to get vars of Base : {}", id);
+        String url = usuario + "/" + projeto + "/*/*/variaveis";
+        String subdir =  "bases/" + id + "-temp/";
+        return getCSV(url, subdir);
+    }
+
+    public ResponseEntity<String> getCSV(String url, String subdir){
+        String arquivo = Itgmrest.getContent(url, subdir);
+        if(arquivo != null && arquivo.length() > 0){
+            arquivo = arquivo.replaceAll("\n", "");
+        }
+        if(arquivo == null || arquivo.startsWith("error:")){
+            return new ResponseEntity<String>(
+                "{\"message\":\"" + arquivo.substring(6) + "\"}",
+                HttpStatus.BAD_REQUEST);
+        }
+        String campos[] = arquivo.split(",");
+        String saida = java.util.Arrays.toString(campos);
+        saida = saida.replaceAll(", ", "\",\"");
+        saida = saida.substring(1, saida.length() - 1);
+        saida = "[\"" + saida + "\"]";
+        return new ResponseEntity<String>(
+            "{\"campos\":" + saida + "}", HttpStatus.OK);
     }
 
 }

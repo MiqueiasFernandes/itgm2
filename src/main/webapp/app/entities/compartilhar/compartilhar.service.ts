@@ -2,17 +2,23 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
+import { EventManager } from 'ng-jhipster';
 import { Compartilhar } from './compartilhar.model';
 @Injectable()
 export class CompartilharService {
 
     private resourceUrl = 'api/compartilhars';
 
-    constructor(private http: Http) { }
+    constructor(
+        private http: Http,
+    private eventManager: EventManager,
+) { }
 
     create(compartilhar: Compartilhar): Observable<Compartilhar> {
         const copy: Compartilhar = Object.assign({}, compartilhar);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
+            this.eventManager
+                .broadcast({ name: 'compartilharListModification', content: 'OK'});
             return res.json();
         });
     }
@@ -20,6 +26,8 @@ export class CompartilharService {
     update(compartilhar: Compartilhar): Observable<Compartilhar> {
         const copy: Compartilhar = Object.assign({}, compartilhar);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
+            this.eventManager
+                .broadcast({ name: 'compartilharListModification', content: 'OK'});
             return res.json();
         });
     }
@@ -32,13 +40,20 @@ export class CompartilharService {
 
     query(req?: any): Observable<Response> {
         const options = this.createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
-        ;
+        return this.http.get(this.resourceUrl, options);
     }
 
     delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
+        return this.http.delete(`${this.resourceUrl}/${id}`)
+            .map(
+                (data) => {
+                    this.eventManager
+                        .broadcast({ name: 'compartilharListModification', content: 'OK'});
+                    return data;
+                }
+            );
     }
+
     private createRequestOption(req?: any): BaseRequestOptions {
         const options: BaseRequestOptions = new BaseRequestOptions();
         if (req) {
@@ -53,5 +68,11 @@ export class CompartilharService {
             options.search = params;
         }
         return options;
+    }
+
+    public receberCompartilhamento(compartilhar: Compartilhar, data: string): Observable<Compartilhar> {
+       return this.http
+            .get(`${this.resourceUrl}/aceitar/${compartilhar.id}?conteudo=${data}`)
+            .map((res: Response) => { return res.json(); });
     }
 }

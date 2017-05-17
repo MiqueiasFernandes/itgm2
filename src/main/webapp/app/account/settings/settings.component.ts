@@ -12,6 +12,8 @@ export class SettingsComponent implements OnInit {
     success: string;
     settingsAccount: any;
     languages: any[];
+    file: any;
+    onLoad = false;
 
     constructor(
         private account: AccountService,
@@ -59,5 +61,20 @@ export class SettingsComponent implements OnInit {
             login: account.login,
             imageUrl: account.imageUrl
         };
+    }
+    setFile($event) {
+        this.file = $event.target.files[0];
+        this.account.sendImage(this.file)
+            .map(res => res.json())
+            .subscribe(
+                (response) => {
+                    console.log('image: ' + response.image);
+                    this.settingsAccount.imageUrl = response.image;
+                    this.onLoad = false;
+                },
+                (error) =>{
+                    this.onLoad = false;
+                });
+        this.onLoad = true;
     }
 }

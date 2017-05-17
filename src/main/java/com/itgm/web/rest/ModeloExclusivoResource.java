@@ -32,7 +32,7 @@ public class ModeloExclusivoResource {
     private final Logger log = LoggerFactory.getLogger(ModeloExclusivoResource.class);
 
     private static final String ENTITY_NAME = "modeloExclusivo";
-        
+
     private final ModeloExclusivoRepository modeloExclusivoRepository;
 
     public ModeloExclusivoResource(ModeloExclusivoRepository modeloExclusivoRepository) {
@@ -91,7 +91,7 @@ public class ModeloExclusivoResource {
     @Timed
     public ResponseEntity<List<ModeloExclusivo>> getAllModeloExclusivos(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of ModeloExclusivos");
-        Page<ModeloExclusivo> page = modeloExclusivoRepository.findAll(pageable);
+        Page<ModeloExclusivo> page = modeloExclusivoRepository.findByUserIsCurrentUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/modelo-exclusivos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
