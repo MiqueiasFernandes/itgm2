@@ -1,0 +1,25 @@
+{
+    "itgmApp": {
+        "script" : {
+            "home": {
+                "title": "Scripts",
+                "createLabel": "Criar novo Script",
+                "createOrEditLabel": "Criar ou editar Script"
+            },
+            "created": "Um novo Script é criado com o identificador {{ param }}",
+            "updated": "Um Script é atualizado com o identificador {{ param }}",
+            "deleted": "Um Script é deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Script {{ id }}?"
+            },
+            "detail": {
+                "title": "Script"
+            },
+            "nome": "Nome",
+            "status": "Status",
+            "token": "Token",
+            "resultados": "Resultados",
+            "cenario": "Cenario"
+        }
+    }
+}

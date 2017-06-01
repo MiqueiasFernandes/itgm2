@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 
 import {EventManager} from 'ng-jhipster';
@@ -27,12 +27,19 @@ import {
 
 import { ShareService } from '../share/share.service';
 
+import { FolderComponent } from './folder/folder.component';
+
 @Component({
     selector: 'jhi-sidebar',
     templateUrl: './sidebar.component.html',
-    styleUrls: ['./sidebar.scss']
+    styleUrls: ['./sidebar.scss'],
+    entryComponents: [
+        FolderComponent,
+    ]
 })
 export class SidebarComponent implements OnInit {
+
+    private isViewInitialized:boolean = false;
 
     isSidebarFixed = false;
     nome = '';
@@ -42,10 +49,15 @@ export class SidebarComponent implements OnInit {
     cenario: Cenario = undefined;
     isbasesOpen = false;
     isModelosOpen = false;
+    isArquivosOpen = false;
     bases: Base[] = null;
     modelos: Modelo[] = null;
     modelosMapeados: number[] = [];
     customize: Customize = null;
+    arquivos = [];
+    loadArquivos = false;
+    loadBases = false;
+    loadModelos = false;
 
     constructor(
         private principal: Principal,
@@ -119,7 +131,7 @@ export class SidebarComponent implements OnInit {
                 .subscribe(
                     (endereco: string) => {
                         console.log('endereco do servidor:  '+ endereco);
-                        this.image = endereco + account.imageUrl;
+                        this.image = account.imageUrl ? (endereco + account.imageUrl) : null;
                     }
                 );
         }
@@ -208,7 +220,9 @@ export class SidebarComponent implements OnInit {
 
     loadAllBases() {
         this.closeMenuModelos();
+        this.closeMenuArquivos();
         if (this.bases === null) {
+            this.loadBases = true;
             this.customizeService.getCustomize()
                 .subscribe(
                     (customize: Customize) => {
@@ -225,6 +239,12 @@ export class SidebarComponent implements OnInit {
                                         this.isbasesOpen = false;
                                     });
                         }
+                    },
+                    () => {
+
+                    },
+                    () => {
+                        this.loadBases = false;
                     });
 
         } else {
@@ -235,7 +255,9 @@ export class SidebarComponent implements OnInit {
 
     loadAllModelos() {
         this.closeMenuBases();
+        this.closeMenuArquivos();
         if (this.modelos === null) {
+            this.loadModelos = true;
             this.modeloService.getAllModelos().subscribe(
                 (modelos: Modelo[]) => {
                     this.modelos = modelos;
@@ -252,6 +274,12 @@ export class SidebarComponent implements OnInit {
                                 }
                             });
                     });
+                },
+                () => {
+
+                },
+                () => {
+                    this.loadModelos = false;
                 }
             );
         } else {
@@ -282,14 +310,42 @@ export class SidebarComponent implements OnInit {
         this.shareService.compartilharModelo(modelo);
     }
 
-    listar(){
-        this.cenarioService.listFiles(this.cenario)
-            .subscribe(
-                (res: string) => {
-                    alert('res: ' + res);
-                }
-            )
-        ;
+    listar() {
+
+        if(this.isArquivosOpen){
+            this.closeMenuArquivos();
+        } else {
+            this.loadArquivos = true;
+            this.closeMenuBases();
+            this.closeMenuModelos();
+            this.isArquivosOpen = true;
+            this.cenarioService
+                .listFiles(this.cenario)
+                .subscribe(
+                    (res: string) => {
+                        res.split(',').forEach((arq) => {
+                            this.arquivos.push(
+                                arq.substring(
+                                this.cenario.caminho.length
+                                )
+                            );
+                        });
+                    },
+                    () => {
+                        alert('Houve um erro ao obter a lista de arquivos!');
+                        this.closeMenuArquivos();
+                    },
+                    () => {
+                        this.loadArquivos = false;
+                    }
+                );
+        }
+    }
+
+    closeMenuArquivos() {
+        this.isArquivosOpen = false;
+        this.arquivos = [];
     }
 
 }
+

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbActiveModal, NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'ng-jhipster';
 import { Response } from '@angular/http';
 import { Projeto, ProjetoService, FabAddProjetoComponent } from '../';
@@ -68,7 +68,7 @@ export class SelecionarProjetoComponent implements OnInit {
     }
 
     close() {
-        this.activeModal.dismiss('closed');
+        this.activeModal.close(this.projeto);
     }
 
     alterarProjeto() {
@@ -86,8 +86,11 @@ export class SelecionarProjetoComponent implements OnInit {
     }
 
     adicionarProjeto(){
-        this.close();
-        this.modalService.open(FabAddProjetoComponent);
+        const ref: NgbModalRef = this.modalService.open(FabAddProjetoComponent);
+        ref.result.then((projeto: Projeto) => {
+            this.projeto = projeto;
+            this.close();
+        });
     }
 
 }

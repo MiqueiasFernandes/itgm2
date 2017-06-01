@@ -7,6 +7,8 @@ import { ItgmBaseModule } from './base/base.module';
 import { ItgmCompartilharModule } from './compartilhar/compartilhar.module';
 import { ItgmModeloExclusivoModule } from './modelo-exclusivo/modelo-exclusivo.module';
 import { ItgmCustomizeModule } from './customize/customize.module';
+import { ItgmTerminalModule } from './terminal/terminal.module';
+import { ItgmScriptModule } from './script/script.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -18,6 +20,8 @@ import { ItgmCustomizeModule } from './customize/customize.module';
         ItgmCompartilharModule,
         ItgmModeloExclusivoModule,
         ItgmCustomizeModule,
+        ItgmTerminalModule,
+        ItgmScriptModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

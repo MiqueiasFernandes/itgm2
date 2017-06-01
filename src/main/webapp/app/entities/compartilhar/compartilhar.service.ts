@@ -73,6 +73,6 @@ export class CompartilharService {
     public receberCompartilhamento(compartilhar: Compartilhar, data: string): Observable<Compartilhar> {
        return this.http
             .get(`${this.resourceUrl}/aceitar/${compartilhar.id}?conteudo=${data}`)
-            .map((res: Response) => { return res.json(); });
+            .map((res) => res.json());
     }
 }

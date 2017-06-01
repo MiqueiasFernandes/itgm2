@@ -55,9 +55,10 @@ describe('Component Tests', () => {
             // WHEN
             comp.ngOnInit();
 
+            expect(true).toEqual(true);
             // THEN
-            expect(service.find).toHaveBeenCalledWith(123);
-            expect(comp.compartilhar).toEqual(jasmine.objectContaining({id:10}));
+             expect(service.find).toHaveBeenCalledWith(123);
+             expect(comp.compartilhar).toEqual(jasmine.objectContaining({id:10}));
             });
         });
     });

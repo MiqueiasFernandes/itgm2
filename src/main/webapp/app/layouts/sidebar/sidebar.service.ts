@@ -28,10 +28,18 @@ export class SidebarService {
                         if (customize) {
                             this.isLockedSidebar = customize.sidebar ? customize.sidebar : false;
                             this.updateLockedSidebar();
-                            this.openSidebar();
                         }
                     }
                 );
+        });
+
+        this.eventManager.subscribe('authenticationSuccess', (message) => {
+            this.openSidebar();
+        });
+
+        this.eventManager.subscribe('logout', () =>{
+            this.isSidebarOpen = false;
+            this.updateSidebarOpen();
         });
     }
 
@@ -40,7 +48,7 @@ export class SidebarService {
         this.updateSidebarOpen();
     }
 
-    closeSidebar() {
+    public closeSidebar() {
         /// Sidebar  / bloqueado
         ///   V      &    V     => v => aberto
         ///   V      &    f     => f => fechado
@@ -53,7 +61,7 @@ export class SidebarService {
         this.updateSidebarOpen();
     }
 
-    toogleSidebar() {
+    public toogleSidebar() {
         if (this.isSidebarOpen) {
             this.closeSidebar();
         } else {
@@ -61,19 +69,19 @@ export class SidebarService {
         }
     }
 
-    toogleSidebarFixed() {
+    public toogleSidebarFixed() {
         this.isLockedSidebar = !this.isLockedSidebar;
         this.updateLockedSidebar();
         this.customizeSidebar();
     }
 
-    lockSidebar() {
+    public lockSidebar() {
         this.isLockedSidebar = true;
         this.updateLockedSidebar();
         this.customizeSidebar();
     }
 
-    unLockSidebar() {
+    public unLockSidebar() {
         this.isLockedSidebar = false;
         this.updateLockedSidebar();
         this.customizeSidebar();
@@ -91,11 +99,11 @@ export class SidebarService {
         this.customizeService.customizeSidebar(this.isLockedSidebar);
     }
 
-    isOpen() {
+    public isOpen():boolean {
         return this.isSidebarOpen;
     }
 
-    isLock() {
+    public isLock():boolean {
         return this.isLockedSidebar;
     }
 }

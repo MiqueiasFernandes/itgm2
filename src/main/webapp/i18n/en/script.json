@@ -1,0 +1,25 @@
+{
+    "itgmApp": {
+        "script" : {
+            "home": {
+                "title": "Scripts",
+                "createLabel": "Create a new Script",
+                "createOrEditLabel": "Create or edit a Script"
+            },
+            "created": "A new Script is created with identifier {{ param }}",
+            "updated": "A Script is updated with identifier {{ param }}",
+            "deleted": "A Script is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Script {{ id }}?"
+            },
+            "detail": {
+                "title": "Script"
+            },
+            "nome": "Nome",
+            "status": "Status",
+            "token": "Token",
+            "resultados": "Resultados",
+            "cenario": "Cenario"
+        }
+    }
+}

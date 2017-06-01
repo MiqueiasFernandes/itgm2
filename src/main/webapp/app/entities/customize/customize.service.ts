@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
-import { Observable, Subject } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 
 import { Customize } from './customize.model';
 
@@ -116,14 +116,14 @@ export class CustomizeService {
                                 );
                             newCustomize.sidebar = true;
                             this.create(newCustomize).subscribe(
-                                (customize: Customize) => {
+                                (customizem: Customize) => {
                                     alert('Sessão personalizada...');
                                     this.eventManager
                                         .broadcast({
                                             name: 'customizeListModification',
                                             content: 'OK'
                                         });
-                                    return customize;
+                                    return customizem;
                                 },
                                 // () => { alert('Houve um erro ao personalizar sessão!'); }
                             );

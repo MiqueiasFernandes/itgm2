@@ -86,15 +86,15 @@ export class ShareService {
             );
         }
         console.log('CONSULTAR COMPARTILHAMENTOS........');
-        this.aguardar();
+        // this.aguardar();
     }
 
     private aguardar() {
-        setTimeout(
-            () => {
-                this.consultarCompartilhamentos()
-            },
-            10000);
+        // setTimeout(
+        //     () => {
+                this.consultarCompartilhamentos();
+            // },
+            // 10000);
     }
 
     private onSuccess(data) {

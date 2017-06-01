@@ -52,6 +52,7 @@ export class FabAddProjetoComponent implements OnInit {
             .subscribe(
                 (projeto: Projeto) => {
                     this.customizeService.customizeProjeto(projeto);
+                    this.projeto = projeto;
                     this.close();
                 },
                 (res: Response) => this.onError(res.json()));
@@ -62,7 +63,7 @@ export class FabAddProjetoComponent implements OnInit {
     }
 
     private close() {
-        this.activeModal.dismiss('closed');
+        this.activeModal.close(this.projeto);
     }
 
 }

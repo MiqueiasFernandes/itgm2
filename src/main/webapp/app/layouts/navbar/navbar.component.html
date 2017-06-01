@@ -1,5 +1,5 @@
 <nav class="navbar navbar-inverse navbar-toggleable-md jh-navbar navbar-fixed-top">
-    <div class="jh-logo-container float-left"  (click)="toogleSidebar()">
+    <div class="jh-logo-container float-left">
         <a class="jh-navbar-toggler hidden-lg-up float-right" href="javascript:void(0);" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
             <i class="fa fa-bars"></i>
         </a>
@@ -12,8 +12,8 @@
     <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="isAuthenticated()">
         <ul class="navbar-nav ml-auto">
 
-            <li ngbDropdown class="nav-item dropdown pointer">
-                <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle>
+            <li  *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer">
+                <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle (click)="consultar()">
                     <i class="fa fa-bell" aria-hidden="true"></i>
                     <span *ngIf="bellN > 0" class="badge bell">{{bellN}}</span>
                 </a>
@@ -26,12 +26,13 @@
                 </ul>
             </li>
 
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <li  *ngSwitchCase="true" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
-                    <i class="fa fa-home" aria-hidden="true"></i>
+                    <i class="fa fa-television" aria-hidden="true"></i>
                     <span jhiTranslate="global.menu.home">Home</span>
                 </a>
             </li>
+
             <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
             <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer">
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
@@ -84,6 +85,18 @@
                         <a class="dropdown-item" routerLink="customize" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.customize">Customize</span>
+                        </a>
+                    </li>
+                    <li uiSrefActive="active">
+                        <a class="dropdown-item" routerLink="terminal" (click)="collapseNavbar()">
+                            <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+                            <span jhiTranslate="global.menu.entities.terminal">Terminal</span>
+                        </a>
+                    </li>
+                    <li uiSrefActive="active">
+                        <a class="dropdown-item" routerLink="script" (click)="collapseNavbar()">
+                            <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+                            <span jhiTranslate="global.menu.entities.script">Script</span>
                         </a>
                     </li>
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->

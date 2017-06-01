@@ -1,0 +1,34 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "cenario",
+            "otherEntityName": "cenario",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "nome",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "token",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "resultados",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170531131816",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "script",
+    "pagination": "pagination"
+}

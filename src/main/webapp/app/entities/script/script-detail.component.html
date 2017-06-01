@@ -1,0 +1,43 @@
+
+<div *ngIf="script">
+    <h2><span jhiTranslate="itgmApp.script.detail.title">Script</span> {{script.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="itgmApp.script.nome">Nome</span></dt>
+        <dd>
+            <span>{{script.nome}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.script.status">Status</span></dt>
+        <dd>
+            <span>{{script.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.script.token">Token</span></dt>
+        <dd>
+            <span>{{script.token}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.script.resultados">Resultados</span></dt>
+        <dd>
+            <span>{{script.resultados}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.script.cenario">Cenario</span></dt>
+        <dd>
+            <div *ngIf="script.cenario">
+                <a [routerLink]="['/cenario', script.cenario?.id]">{{script.cenario?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'script/'+ script.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

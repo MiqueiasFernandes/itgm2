@@ -23,6 +23,6 @@ export class AccountService  {
 
     getEndereco(): Observable<string> {
         return this.http.get('api/endereco')
-            .map(res => res.json().endereco);
+            .map((res) => (res.json().endereco));
     }
 }

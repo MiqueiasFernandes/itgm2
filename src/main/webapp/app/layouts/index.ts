@@ -13,3 +13,4 @@ export * from './sidebar/sidebar.component';
 export * from './sidebar/sidebar.service';
 export * from './share/share.component';
 export * from './share/share.service';
+export * from './sidebar/folder/folder.component';

@@ -44,7 +44,7 @@ export class LoginService {
         this.eventManager
             .broadcast({ name: 'logout', content: 'required'});
         this.authServerProvider.logout().subscribe(
-            () => {
+            (res) => {
                 this.eventManager
                     .broadcast({ name: 'logout', content: 'susceded'});
             }

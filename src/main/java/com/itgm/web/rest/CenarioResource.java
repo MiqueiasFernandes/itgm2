@@ -158,7 +158,7 @@ public class CenarioResource {
     }
 
     /**
-     * GET  /listar : get list of files in cenario.
+     * GET  /listar/:id : get list of files in cenario.
      *
      * @param id the id of the cenario to retrieve
      * @return the ResponseEntity with status 200 (OK) and the list of files in body
@@ -171,11 +171,36 @@ public class CenarioResource {
 
         String path =
             cenario.getProjeto().getUser().getLogin() + "/"+
-        cenario.getProjeto().getNome() + "/"+
-            cenario.getNome() + "/*";
+                cenario.getProjeto().getNome() + "/"+
+                cenario.getNome() + "/*";
 
         String ret = Itgmrest.listFiles(path);
         return new ResponseEntity<>("{\"files\":\"" + ret + "\"}", HttpStatus.OK);
     }
 
+    @GetMapping("/cenarios/publicar/{id}")
+    @Timed
+    public ResponseEntity<String> publicarArquivo(
+        @PathVariable Long id,
+        @RequestParam("path") String path,
+        @RequestParam("file") String file,
+        @RequestParam("meta") boolean meta,
+        @RequestParam("image") boolean image) {
+        log.debug("REST request to public file in Cenario: " + id + " path: " + path + " file: " + file);
+        Cenario cenario;
+        return new ResponseEntity<String>("{\"file\":\"" +
+            (id < 0 ?
+                Itgmrest.getContent(
+                    file,
+                    path + "&cript=true")
+                :
+                Itgmrest.publicFile(
+                    (cenario = cenarioRepository.findOne(id)).getProjeto().getUser().getLogin(),
+                    cenario.getProjeto().getNome(),
+                    cenario.getNome(),
+                    "*",
+                    path + (meta ? ("&meta=true&image=" + image) : ""),
+                    file).replace(",\"size\":", "\",\"size\":")
+            ) + (meta ? "" : "\"") + "}", HttpStatus.OK);
+    }
 }

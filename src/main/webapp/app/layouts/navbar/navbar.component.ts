@@ -29,7 +29,6 @@ export class NavbarComponent implements OnInit {
     compartilhamentos: Compartilhar[];
     bellN  = 0;
 
-
     constructor(
         private loginService: LoginService,
         private languageHelper: JhiLanguageHelper,
@@ -70,6 +69,7 @@ export class NavbarComponent implements OnInit {
 
     collapseNavbar() {
         this.isNavbarCollapsed = true;
+        this.toogleSidebar();
     }
 
     isAuthenticated() {
@@ -101,5 +101,9 @@ export class NavbarComponent implements OnInit {
     receberCompartilhamento(compartilhar: Compartilhar){
         this.collapseNavbar();
         this.shareService.receber(compartilhar);
+    }
+
+    consultar() {
+        this.shareService.consultarCompartilhamentos();
     }
 }

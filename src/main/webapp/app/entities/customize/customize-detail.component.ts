@@ -5,7 +5,6 @@ import { EventManager , JhiLanguageService , DataUtils } from 'ng-jhipster';
 
 import { Customize } from './customize.model';
 import { CustomizeService } from './customize.service';
-
 @Component({
     selector: 'jhi-customize-detail',
     templateUrl: './customize-detail.component.html'
@@ -38,6 +37,7 @@ export class CustomizeDetailComponent implements OnInit, OnDestroy {
             this.customize = customize;
         });
     }
+
     byteSize(field) {
         return this.dataUtils.byteSize(field);
     }

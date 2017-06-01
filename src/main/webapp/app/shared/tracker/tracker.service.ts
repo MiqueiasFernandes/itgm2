@@ -46,7 +46,7 @@ export class JhiTrackerService {
         this.stompClient = Stomp.over(socket);
         const headers = {};
         this.stompClient.connect(headers, () => {
-            if(this.connectedPromise) {
+            if (this.connectedPromise) {
                 this.connectedPromise('success');
             }
             this.connectedPromise = null;

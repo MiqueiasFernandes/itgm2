@@ -95,17 +95,17 @@ export class Principal {
     }
 
     getImageUrl(): String {
-        if(!this.serverEndereco) {
+        if (!this.serverEndereco) {
             this.account.getEndereco().subscribe(
                 (endereco: string) => {
                     this.serverEndereco = endereco;
                 },
                 () => {
-                    alert("ERRO AO BUSCAR ENDEREÇO DO SERVIDOR!")
+                    alert('ERRO AO BUSCAR ENDEREÇO DO SERVIDOR!');
                 }
             );
         }
-        return ((this.isIdentityResolved() && this.serverEndereco) ?
+        return ((this.isIdentityResolved() && this.serverEndereco && this.userIdentity.imageUrl) ?
             (this.serverEndereco + this.userIdentity.imageUrl) : null);
     }
 }

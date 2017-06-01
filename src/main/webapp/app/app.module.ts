@@ -14,6 +14,10 @@ import { LayoutRoutingModule } from './layouts';
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
 import {
     JhiMainComponent,
     NavbarComponent,
@@ -26,13 +30,15 @@ import {
     ShareService,
     FabAddComponent,
     SidebarComponent,
-    SidebarService
+    SidebarService,
+    FolderComponent
 } from './layouts';
 
 
 @NgModule({
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         LayoutRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
         ItgmSharedModule,
@@ -50,10 +56,12 @@ import {
         FooterComponent,
         ShareComponent,
         FabAddComponent,
-        SidebarComponent
+        SidebarComponent,
+        FolderComponent
     ],
     entryComponents: [
-        ShareComponent
+        ShareComponent,
+        FolderComponent
     ],
     providers: [
         ProfileService,

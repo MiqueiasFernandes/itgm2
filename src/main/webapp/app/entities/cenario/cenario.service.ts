@@ -80,8 +80,19 @@ export class CenarioService {
             });
     }
 
-    public listFiles(cenario: Cenario): Observable<string>{
+    public listFiles(cenario: Cenario): Observable<string> {
         return this.http.get(`${this.resourceUrl}/listar/${cenario.id}`)
-            .map(res => res.json().files);
+            .map((res) => res.json().files);
+    }
+
+    public publicarArquivo(cenario: Cenario, path: string, file: string, getText: boolean, isImage: boolean): Observable<any> {
+        if(getText) {
+            const caminho = cenario.caminho.endsWith('/') ? cenario.caminho : (cenario.caminho + '/');
+            return this.http.get(`${this.resourceUrl}/publicar/-1/?path=${path}&file=${caminho + '*/' + file}&meta=false&image=false`)
+                .map((res) => res.json());////removido .file
+        }else{
+            return this.http.get(`${this.resourceUrl}/publicar/${cenario.id}/?path=${path}&file=${file}&meta=true&image=${isImage}`)
+                .map((res) => res.json());////removido .file
+        }
     }
 }

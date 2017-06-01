@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal,NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'ng-jhipster';
 import { Compartilhar, CompartilharService } from "../../entities/compartilhar/";
 import { Account, Principal } from '../../shared';
 import { UserService } from "../../shared/user/user.service";
 import { User } from "../../shared/user/user.model";
 import {
+    Projeto,
+    SelecionarProjetoComponent,
     Base,
     BaseService,
     Modelo,
@@ -27,6 +29,7 @@ export class ShareComponent {
     constructor(
         private principal: Principal,
         public activeModal: NgbActiveModal,
+        private modalService: NgbModal,
         private alertService: AlertService,
         private compartilharService: CompartilharService,
         private userService: UserService,
@@ -92,6 +95,9 @@ export class ShareComponent {
             .subscribe(
                 () => {
                     this.close();
+                },
+                (error) => {
+                    this.onError(error.json())
                 }
             );
     }
@@ -106,20 +112,23 @@ export class ShareComponent {
 
 
     private  receberBase(compartilhar: Compartilhar) {
+        alert('recebendo base ');
         if(compartilhar.tipo === 'Base') {
+            alert('recebendo e');
             this.customizeService.getCustomize().subscribe(
                 (customize: Customize) => {
-                    alert('ATENÇÂO: A base será definida para este projeto ativo: '
-                        + customize.projeto.nome + ' (' + customize.projeto.id + ')');
-                    this.baseService.create(
-                        new Base(undefined, compartilhar.nome, undefined, customize.projeto))
-                        .subscribe(
-                            (base: Base) => {
-                                this.criarArquivoRebebimento(
-                                    base.local
-                                )
-                            }
-                        );
+                    if ( customize.projeto && customize.projeto.id ) {
+                        ////caso tem projeto definido
+                        alert('ATENÇÂO: A base será definida para este projeto ativo: '
+                            + customize.projeto.nome + ' (' + customize.projeto.id + ')');
+                        this.criarBase(compartilhar.nome, customize.projeto);
+                    } else {
+                        ///caso nao tem projeto definido
+                        const ref: NgbModalRef =  this.modalService.open(SelecionarProjetoComponent);
+                        ref.result.then((projeto: Projeto) => {
+                            this.criarBase(compartilhar.nome, projeto);
+                        });
+                    }
                 }
             );
         }
@@ -127,43 +136,47 @@ export class ShareComponent {
 
     private receberModelo(compartilhar: Compartilhar){
         if (compartilhar.tipo === 'Modelo') {
-            this.customizeService.getCustomize().subscribe(
-                (customize: Customize) => {
-                    alert('ATENÇÃO: O Modelo será definido para este projeto ativo: '
-                        + customize.projeto.nome + ' (' + customize.projeto.id + ') cod: ' + compartilhar.codigo);
+            const modelo: Modelo= JSON.parse(compartilhar.codigo);
+            modelo.id = undefined;
+            modelo.user = compartilhar.destinatario;
+            this.modeloService.create(modelo)
+                .subscribe(
+                    () => {
+                        this.compartilharService.delete(compartilhar.id)
+                            .subscribe(
+                                () => {
+                                    this.close();
+                                }
+                            );
+                    }
+                );
+        }
+    }
 
-                    const modelo: Modelo= JSON.parse(compartilhar.codigo);
-                    modelo.id = undefined;
-                    modelo.user = compartilhar.destinatario;
-                    this.modeloService.create(modelo)
+    private criarBase(nome: string, projeto: Projeto) {
+
+        this.baseService.create(
+            new Base(undefined, nome, undefined, projeto))
+            .subscribe(
+                (base: Base) => {
+                    this.compartilharService
+                        .receberCompartilhamento(this.compartilharEl, base.local)
                         .subscribe(
-                            () => {
-                                this.compartilharService.delete(compartilhar.id)
+                            (comp: Compartilhar) => {
+                                this.compartilharService.delete(comp.id)
                                     .subscribe(
                                         () => {
                                             this.close();
                                         }
                                     );
+                            },
+                            (error) => {
+                                this.onError(error.json())
                             }
                         );
                 }
             );
-        }
-    }
 
-    private criarArquivoRebebimento(conteudo: string) {
-        this.compartilharService
-            .receberCompartilhamento(this.compartilharEl, conteudo)
-            .subscribe(
-                (comp: Compartilhar) => {
-                    this.compartilharService.delete(comp.id)
-                        .subscribe(
-                            () => {
-                                this.close();
-                            }
-                        );
-                }
-            );
     }
 
 }

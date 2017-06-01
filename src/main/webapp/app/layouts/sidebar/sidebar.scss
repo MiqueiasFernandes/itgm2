@@ -108,10 +108,14 @@
 
 .sidebar .menu .ativo {
     background: darkslategrey;
+    font-weight: bold;
 }
 
 .sidebar .menu .nivel2:hover {
     background: black;
+}
+.sidebar .menu .nivel2{
+    font-weight: normal;
 }
 
 .sidebar .menu .list .header {
@@ -124,6 +128,7 @@
 
 
 .sidebar .footer {
+    display: inherit;
     background-color: #fff;
     position: absolute;
     bottom: 0;
@@ -141,4 +146,8 @@
 .trash{
     float: right;
     margin-top: 1%;
+}
+
+.lista {
+    margin-top: 5px;
 }

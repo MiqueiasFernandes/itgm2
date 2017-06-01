@@ -1,0 +1,30 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "cenario",
+            "otherEntityName": "cenario",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "nome",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "url",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20170531131005",
+    "dto": "no",
+    "service": "no",
+    "entityTableName": "terminal",
+    "pagination": "pagination"
+}

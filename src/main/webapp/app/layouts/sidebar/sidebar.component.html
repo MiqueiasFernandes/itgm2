@@ -3,7 +3,7 @@
     <div class="user-info">
         <div class="image" *ngIf="image">
             <!--<img *ngIf="customize && customize.avatar" [src]="'data:' + customize.avatarContentType + ';base64,' + customize.avatar" alt="{{nome}}" width="48" height="48"/>-->
-            <img [src]="image"  alt="{{nome}}" width="48" height="48">
+            <img *ngIf="image" [src]="image"  alt="{{nome}}" width="48" height="48">
         </div>
         <div class="info-container">
             <div class="name"  (click)="configurar()">
@@ -28,7 +28,12 @@
             </li>
 
             <li *ngIf="projeto !== null && projeto !== undefined" [ngClass]="{'nivel1': true, 'ativo': isbasesOpen}" (click)="loadAllBases()">
-                Bases <i [ngClass]="{
+                Bases
+
+                <i *ngIf="loadBases" class="fa fa-spinner fa-pulse fa-fw"></i>
+
+
+                <i [ngClass]="{
                          'fa' : true,
                          'right': true,
                          'fa-chevron-up' : isbasesOpen,
@@ -59,7 +64,12 @@
             </li>
 
             <li [ngClass]="{'nivel1': true, 'ativo': isModelosOpen}" (click)="loadAllModelos()">
-                Modelos <i [ngClass]="{
+                Modelos
+
+                <i *ngIf="loadModelos" class="fa fa-spinner fa-pulse fa-fw"></i>
+
+
+                <i [ngClass]="{
                          'fa' : true,
                          'right': true,
                          'fa-chevron-up' : isModelosOpen,
@@ -93,11 +103,25 @@
                     </li>
                 </ul>
             </li>
+
             <li *ngIf="cenario !== null && cenario !== undefined" class="nivel1">
                 Processar Scripts
             </li>
-            <li  *ngIf="cenario !== null && cenario !== undefined"  class="nivel1" (click)="listar()">
-                Resultados
+
+            <li *ngIf="cenario !== null && cenario !== undefined"
+                [ngClass]="{'nivel1': true, 'ativo': isArquivosOpen}">
+                <div (click)="listar()">
+                    Resultados <i *ngIf="loadArquivos" class="fa fa-spinner fa-pulse fa-fw"></i>
+                    <i [ngClass]="{
+                         'fa' : true,
+                         'right': true,
+                         'fa-chevron-up' : isArquivosOpen,
+                         'fa-chevron-down' : !isArquivosOpen
+                         }" aria-hidden="true"></i>
+                </div>
+                <ul class="nivel2">
+                    <jhi-folder [arquivos]="arquivos" [pai]="cenario.caminho"></jhi-folder>
+                </ul>
             </li>
         </ul>
     </div>

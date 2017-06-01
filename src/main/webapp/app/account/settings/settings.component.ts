@@ -65,14 +65,14 @@ export class SettingsComponent implements OnInit {
     setFile($event) {
         this.file = $event.target.files[0];
         this.account.sendImage(this.file)
-            .map(res => res.json())
+            .map((res) => res.json())
             .subscribe(
                 (response) => {
                     console.log('image: ' + response.image);
                     this.settingsAccount.imageUrl = response.image;
                     this.onLoad = false;
                 },
-                (error) =>{
+                (error) => {
                     this.onLoad = false;
                 });
         this.onLoad = true;

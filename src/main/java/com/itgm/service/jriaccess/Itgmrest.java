@@ -115,16 +115,22 @@ public class Itgmrest {
         String diretorio,
         String subdiretorio,
         String file) {
+
+        String url =   "http://" + getIP() + local
+            + "file/"
+            + usuario + "/"
+            + projeto + "/"
+            + cenario + "/"
+            + diretorio + "/"
+            + file + (subdiretorio == null ? "" : "?subdiretorio=" + subdiretorio);
+
+        System.out.println("############################################\npublicando em: " + url);
+
         RestTemplate rt = new RestTemplate();
         String ret = rt
             .getForObject(
-                "http://" + getIP() + local
-                    + "file/"
-                    + usuario + "/"
-                    + projeto + "/"
-                    + cenario + "/"
-                    + diretorio + "/"
-                    + file + (subdiretorio == null ? "" : "?subdiretorio=" + subdiretorio), String.class);
+                url
+              , String.class);
         return (ret != null && ret.length() > 0 && !ret.isEmpty() && !ret.startsWith("error:")) ? ret : null;
     }
 

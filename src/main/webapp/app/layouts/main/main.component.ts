@@ -46,4 +46,9 @@ export class JhiMainComponent implements OnInit {
             }
         });
     }
+
+
+    noIsHome(): boolean {
+        return !this.router.isActive('/', true);
+    }
 }
