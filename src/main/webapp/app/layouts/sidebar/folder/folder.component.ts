@@ -129,46 +129,53 @@ export class FolderComponent {
                             this.homeService.getTipoPorExtensao(file) === 'figura'
                         )
                             .subscribe((nfile: any) => {
-                                if (this.homeService.isText(file)) {
-                                    this.cenarioService.publicarArquivo(
-                                        custom.cenario,
-                                        this.pai.substring(custom.cenario.caminho.length),
-                                        file,
-                                        false,
-                                        false
-                                    )
-                                        .subscribe((url: any) => {
-                                                this.homeService.abrirArquivo(
-                                                    file,
-                                                    url.file,
-                                                    nfile.file,
-                                                    url.size,
-                                                    caminho,
-                                                    url.width,
-                                                    url.height
-                                                );
-                                            },
-                                            (error) => {
-                                                alert('houve um erro: ' + error.json());
-                                                this.pararLoading(file);
-                                            });
-                                } else {
-                                    this.homeService.abrirArquivo(
-                                        file,
-                                        nfile.file,
-                                        null,
-                                        nfile.size,
-                                        caminho,
-                                        nfile.width,
-                                        nfile.height
-                                    );
+                                    if (this.homeService.isText(file)) {
+                                        this.cenarioService.publicarArquivo(
+                                            custom.cenario,
+                                            this.pai.substring(custom.cenario.caminho.length),
+                                            file,
+                                            false,
+                                            false
+                                        )
+                                            .subscribe((url: any) => {
+                                                    this.homeService.abrirArquivo(
+                                                        file,
+                                                        url.file,
+                                                        nfile.file,
+                                                        url.size,
+                                                        caminho,
+                                                        url.width,
+                                                        url.height
+                                                    );
+                                                },
+                                                (error) => {
+                                                    alert('152) houve um erro: ' + error.json());
+                                                    this.pararLoading(file);
+                                                });
+                                    } else {
+                                        this.homeService.abrirArquivo(
+                                            file,
+                                            nfile.file,
+                                            null,
+                                            nfile.size,
+                                            caminho,
+                                            nfile.width,
+                                            nfile.height
+                                        );
+                                    }
+                                    this.pararLoading(file);
+                                },
+                                (error) => {
+                                    alert('169) houve um erro: ' + error.json());
+                                    this.pararLoading(file);
                                 }
-                                this.pararLoading(file);
-                            });
+                            );
+                    } else {
+                        alert('173) selecione um cenario!');
                     }
                 },
                 (error) => {
-                    alert('houve um erro: ' + error.json());
+                    alert('177) houve um erro: ' + error.json());
                     this.pararLoading(file);
                 }
             );

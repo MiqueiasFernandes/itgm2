@@ -45,7 +45,7 @@ public class Itgmrest {
     }
 
     public static String getEndereco(){
-        return "http://" + getIP() + "/temp/";
+        return "http://" + getIP() + ":80/temp/";
     }
 
     public static String getContent(String url, String subdir) {

@@ -180,7 +180,7 @@ public class CenarioResource {
 
     @GetMapping("/cenarios/publicar/{id}")
     @Timed
-    public ResponseEntity<String> publicarArquivo(
+    public ResponseEntity<String> publicarArquivoparaExibir(
         @PathVariable Long id,
         @RequestParam("path") String path,
         @RequestParam("file") String file,
@@ -200,7 +200,6 @@ public class CenarioResource {
                     cenario.getNome(),
                     "*",
                     path + (meta ? ("&meta=true&image=" + image) : ""),
-                    file).replace(",\"size\":", "\",\"size\":")
-            ) + (meta ? "" : "\"") + "}", HttpStatus.OK);
+                    file)) + "\"}", HttpStatus.OK);
     }
 }
