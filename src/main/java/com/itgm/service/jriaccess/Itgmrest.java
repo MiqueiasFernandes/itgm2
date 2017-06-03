@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class Itgmrest {
 
-    public static String local = ":8090/ITGMRest2/webresources/jriaccess/";
+    public static String local = ":8080/ITGMRest2/webresources/jriaccess/";
     public static String urlIP = "http://www.mikeias.net"; ///p/ip-itgm-rest.html
     public static String IP = null;
     public static Long time;
@@ -35,13 +35,13 @@ public class Itgmrest {
     }
 
     public static String getIP() {
-        if (IP == null || (time + (1000 * 60 * min_to_update_ip)) < new Date().getTime()) {
-        String pagina = new RestTemplate().getForObject(urlIP, String.class);
-        String[] ip = pagina.split("segue o ip para acesso ao ITGM Rest ");
-        IP = ip[1].substring(0, ip[1].indexOf(":"));
-            time = new Date().getTime();
-        }
-        return IP;
+//        if (IP == null || (time + (1000 * 60 * min_to_update_ip)) < new Date().getTime()) {
+//            String pagina = new RestTemplate().getForObject(urlIP, String.class);
+//            String[] ip = pagina.split("segue o ip para acesso ao ITGM Rest ");
+//            IP = ip[1].substring(0, ip[1].indexOf(":"));
+//            time = new Date().getTime();
+//        }
+        return "itgm.mikeias.net";
     }
 
     public static String getEndereco(){
@@ -130,7 +130,7 @@ public class Itgmrest {
         String ret = rt
             .getForObject(
                 url
-              , String.class);
+                , String.class);
         return (ret != null && ret.length() > 0 && !ret.isEmpty() && !ret.startsWith("error:")) ? ret : null;
     }
 
@@ -149,12 +149,12 @@ public class Itgmrest {
     }
 
     public static boolean createNewFile(String user,
-                                    String projeto,
-                                    String cenario,
-                                    String diretorio,
-                                    String subdiretorio,
-                                    String nomeDoArquivo,
-                                    String conteudo) {
+                                        String projeto,
+                                        String cenario,
+                                        String diretorio,
+                                        String subdiretorio,
+                                        String nomeDoArquivo,
+                                        String conteudo) {
         return sendText( ///codnome+ "/*/*/*/" + "user.data", "desc/",
             user
                 + "/" + projeto
@@ -196,14 +196,22 @@ public class Itgmrest {
     }
 
     public static void executarBatch(String endereco, String codigo){
-        String query = "?&parametros=BATCH&parametros=log.txt&parametros=DEBUG&memoria=20&cpu=1&disco=20&salvar=true";
+        String query = "?&parametros=BATCH" +
+            "&parametros=log.txt" +
+            "&parametros=INFO" +
+            "&memoria=20" +
+            "&cpu=1" +
+            "&disco=20" +
+            "&salvar=true";
         try {
-            new RestTemplate().put(
+            new RestTemplate().postForObject(
                 "http://" + getIP() + local + endereco + query,
-                java.net.URLEncoder.encode(codigo, "UTF-8")
+                java.net.URLEncoder.encode(codigo, "UTF-8"),
+                String.class
             );
         }catch (Exception ex){
-
+            System.err.println("######################################################+" +
+                "ERROR AO TENTAR EXECUTAR BACH ANONIMO: " + ex);
         }
     }
 
@@ -213,7 +221,7 @@ public class Itgmrest {
             "http://" + getIP() + local + "compartilhamento/"
                 + "?origem=" + origem
                 + "&destino=" + destino);
-      return rt.getForObject(uri, String.class);
+        return rt.getForObject(uri, String.class);
     }
 
     public static String receberCompartilhamento(String usuario, String token){
@@ -239,6 +247,31 @@ public class Itgmrest {
             "share/" + token + "/",
             token,
             conteudo);
+    }
+
+
+    public static String getToken(String usuario,
+                                  String projeto,
+                                  String cenario,
+                                  String diretorio,
+                                  String[] parametros,
+                                  int memoria,
+                                  int disco,
+                                  int cpu,
+                                  boolean salvar,
+                                  String codigo) {
+        RestTemplate rt = new RestTemplate();
+
+        String params = "?parametros=" + String.join("&parametros=", parametros) +
+            "&memoria=" + memoria +
+            "&cpu=" + cpu +
+            "&disco="+  disco +
+            "&salvar=" + (salvar ? "true" : "false");
+
+        String uri =
+            "http://" + getIP() + local +
+                usuario + '/' + projeto + '/' + cenario +'/' + diretorio + params;
+        return rt.postForObject(uri, codigo, String.class);
     }
 
 }

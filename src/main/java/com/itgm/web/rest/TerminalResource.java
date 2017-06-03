@@ -1,9 +1,11 @@
 package com.itgm.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.itgm.domain.Cenario;
 import com.itgm.domain.Terminal;
 
 import com.itgm.repository.TerminalRepository;
+import com.itgm.service.jriaccess.Itgmrest;
 import com.itgm.web.rest.util.HeaderUtil;
 import com.itgm.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -32,7 +34,7 @@ public class TerminalResource {
     private final Logger log = LoggerFactory.getLogger(TerminalResource.class);
 
     private static final String ENTITY_NAME = "terminal";
-        
+
     private final TerminalRepository terminalRepository;
 
     public TerminalResource(TerminalRepository terminalRepository) {
@@ -53,7 +55,23 @@ public class TerminalResource {
         if (terminal.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new terminal cannot already have an ID")).body(null);
         }
+        Cenario cenario = terminal.getCenario();
+        String token =  Itgmrest.getToken(
+            cenario.getProjeto().getUser().getLogin(),
+            cenario.getProjeto().getNome(),
+            cenario.getNome(),
+            terminal.getNome(),
+            new String[]{"LIVE", "log.txt", "DEBUG", "--vanilla"},
+            100,
+            100,
+            100,
+            true,
+            "null"
+        );
+
+        terminal.setUrl(token);
         Terminal result = terminalRepository.save(terminal);
+        
         return ResponseEntity.created(new URI("/api/terminals/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

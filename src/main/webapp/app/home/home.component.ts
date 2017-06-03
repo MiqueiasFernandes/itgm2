@@ -284,19 +284,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
         return ['figura', 'rbokeh', 'planilha', 'texto', 'codigo'].indexOf(this.getTipo(card)) >= 0;
     }
 
-    destacar(id: number) {
+    destacar(id: number, carde: any) {
+        const rect = carde.getBoundingClientRect();
         const card = this.getCardByID(id);
         const tipo = this.getTipo(card);
         const url = this.getURL(card);
-        var myWindow = window.open(url,
+        const myWindow = window.open(url,
             '_blank',
             'fullscreen=no,' +
             'menubar=no,' +
             'toolbar=no,' +
             'location=yes,' +
             'resizable=yes,' +
-            'top=500,' +
-            'left=500,' +
+            'top=' + (rect.top + 100) + ',' +
+            'left=' + rect.left + ',' +
             'height=' + (tipo === 'figura' ? this.getHeight(card): '500') + ',' +
             'width=' + (tipo === 'figura' ? this.getWidth(card): '500')  + ',' +
             'scrollbars=yes,' +
@@ -339,7 +340,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
             case 'texto':
             case 'codigo':
                 myWindow.document.write(this.getText(card));
+                break;
             default:
+                break;
         }
         this.closeDropDown();
     }
