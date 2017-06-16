@@ -1,0 +1,51 @@
+
+<div *ngIf="card">
+    <h2><span jhiTranslate="itgmApp.card.detail.title">Card</span> {{card.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="itgmApp.card.nome">Nome</span></dt>
+        <dd>
+            <span>{{card.nome}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.card.url">Url</span></dt>
+        <dd>
+            <span>{{card.url}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.card.meta">Meta</span></dt>
+        <dd>
+            <span>{{card.meta}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.card.disposicao">Disposicao</span></dt>
+        <dd>
+            <span>{{card.disposicao}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.card.tipo">Tipo</span></dt>
+        <dd>
+            <span>{{card.tipo}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.card.modo">Modo</span></dt>
+        <dd>
+            <span>{{card.modo}}</span>
+        </dd>
+        <dt><span jhiTranslate="itgmApp.card.customize">Customize</span></dt>
+        <dd>
+            <div *ngIf="card.customize">
+                <a [routerLink]="['/customize', card.customize?.id]">{{card.customize?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'card/'+ card.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.itgm.domain.Projeto;
 
 import com.itgm.repository.ProjetoRepository;
+import com.itgm.security.SecurityUtils;
 import com.itgm.web.rest.util.HeaderUtil;
 import com.itgm.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -112,7 +113,13 @@ public class ProjetoResource {
     @Timed
     public ResponseEntity<List<Projeto>> getAllProjetos(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Projetos");
-        Page<Projeto> page = projetoRepository.findByUserIsCurrentUser(pageable);
+        Page<Projeto> page;
+
+        if(SecurityUtils.isCurrentUserInRole("ROLE_ADMIN"))
+            page = projetoRepository.findAll(pageable);
+        else
+            page = projetoRepository.findByUserIsCurrentUser(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projetos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

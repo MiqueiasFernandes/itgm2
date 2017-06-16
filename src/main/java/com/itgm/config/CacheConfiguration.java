@@ -50,6 +50,7 @@ public class CacheConfiguration {
             cm.createCache(com.itgm.domain.Terminal.class.getName(), jcacheConfiguration);
             cm.createCache(com.itgm.domain.Terminal.class.getName() + ".cenarios", jcacheConfiguration);
             cm.createCache(com.itgm.domain.Script.class.getName(), jcacheConfiguration);
+            cm.createCache(com.itgm.domain.Card.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

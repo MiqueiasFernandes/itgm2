@@ -34,7 +34,7 @@
             </li>
 
             <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer">
+            <li *jhiHasAnyAuthority="'ROLE_ADMIN'" ngbDropdown class="nav-item dropdown pointer">
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
                     <span>
                         <i class="fa fa-th-list" aria-hidden="true"></i>
@@ -44,7 +44,7 @@
                         <b class="caret"></b>
                     </span>
                 </a>
-                <ul class="dropdown-menu" ngbDropdownMenu>
+                <ul class="dropdown-menu" ngbDropdownMenu >
                     <li uiSrefActive="active">
                         <a class="dropdown-item" routerLink="projeto" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
@@ -97,6 +97,12 @@
                         <a class="dropdown-item" routerLink="script" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.script">Script</span>
+                        </a>
+                    </li>
+                    <li uiSrefActive="active">
+                        <a class="dropdown-item" routerLink="card" (click)="collapseNavbar()">
+                            <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+                            <span jhiTranslate="global.menu.entities.card">Card</span>
                         </a>
                     </li>
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->

@@ -5,6 +5,7 @@ import com.itgm.domain.Cenario;
 import com.itgm.domain.Terminal;
 
 import com.itgm.repository.TerminalRepository;
+import com.itgm.security.SecurityUtils;
 import com.itgm.service.jriaccess.Itgmrest;
 import com.itgm.web.rest.util.HeaderUtil;
 import com.itgm.web.rest.util.PaginationUtil;
@@ -71,7 +72,7 @@ public class TerminalResource {
 
         terminal.setUrl(token);
         Terminal result = terminalRepository.save(terminal);
-        
+
         return ResponseEntity.created(new URI("/api/terminals/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -109,7 +110,13 @@ public class TerminalResource {
     @Timed
     public ResponseEntity<List<Terminal>> getAllTerminals(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Terminals");
-        Page<Terminal> page = terminalRepository.findAll(pageable);
+        Page<Terminal> page;
+
+        if(SecurityUtils.isCurrentUserInRole("ROLE_ADMIN"))
+            page = terminalRepository.findAll(pageable);
+        else
+            page = terminalRepository.findByUserIsCurrentUser(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/terminals");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -125,6 +132,7 @@ public class TerminalResource {
     public ResponseEntity<Terminal> getTerminal(@PathVariable Long id) {
         log.debug("REST request to get Terminal : {}", id);
         Terminal terminal = terminalRepository.findOne(id);
+
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(terminal));
     }
 

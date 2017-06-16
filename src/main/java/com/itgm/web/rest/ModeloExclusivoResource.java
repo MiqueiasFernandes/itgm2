@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.itgm.domain.ModeloExclusivo;
 
 import com.itgm.repository.ModeloExclusivoRepository;
+import com.itgm.security.SecurityUtils;
 import com.itgm.web.rest.util.HeaderUtil;
 import com.itgm.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -91,7 +92,13 @@ public class ModeloExclusivoResource {
     @Timed
     public ResponseEntity<List<ModeloExclusivo>> getAllModeloExclusivos(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of ModeloExclusivos");
-        Page<ModeloExclusivo> page = modeloExclusivoRepository.findByUserIsCurrentUser(pageable);
+        Page<ModeloExclusivo> page;
+
+        if(SecurityUtils.isCurrentUserInRole("ROLE_ADMIN"))
+            page = modeloExclusivoRepository.findAll(pageable);
+        else
+            page = modeloExclusivoRepository.findByUserIsCurrentUser(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/modelo-exclusivos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

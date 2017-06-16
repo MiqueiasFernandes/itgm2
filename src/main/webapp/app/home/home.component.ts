@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     endereco = null;
     cards = [];
     dropdows = [];
-    htmls = [];
+    // htmls = [];
     resolvidos = [];
     windowRef :any;
     transitions = [];
@@ -151,10 +151,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
                                 });
                                 this.desktop = cards.length > 0;
                                 this.endereco = cardss[2];
-                                cardss[1].forEach((url: string) => {
-                                    this.resolvidos[url.split('/')[4].replace('.', '')] = this.domSanitizer
-                                        .bypassSecurityTrustResourceUrl(url);
-                                });
+                                // cardss[1].forEach((url: string) => {
+                                //     this.resolvidos[url.split('/')[4].replace('.', '')] = this.domSanitizer
+                                //         .bypassSecurityTrustResourceUrl(url);
+                                // });
                             }
                         );
                 }
@@ -332,7 +332,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                     //Header set Access-Control-Allow-Origin "*"
                     //</Directory>
 
-                    myWindow.document.write(html.replace('url', url).replace('imagemgif', this.endereco + 'loading.gif'));
+                    myWindow.document.write(html.replace('url', url).replace('imagemgif', this.endereco/*.replace('http:', 'https:').replace(':80', '')*/ + 'loading.gif'));
                 }
                 break;
             case 'rdata':

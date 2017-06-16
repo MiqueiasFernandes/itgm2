@@ -61,6 +61,8 @@ export class NavbarComponent implements OnInit {
         });
 
         this.shareService.consultarCompartilhamentos();
+
+        this.sidebarService.openSidebar();
     }
 
     changeLanguage(languageKey: string) {

@@ -1,0 +1,27 @@
+{
+    "itgmApp": {
+        "card" : {
+            "home": {
+                "title": "Cards",
+                "createLabel": "Criar novo Card",
+                "createOrEditLabel": "Criar ou editar Card"
+            },
+            "created": "Um novo Card é criado com o identificador {{ param }}",
+            "updated": "Um Card é atualizado com o identificador {{ param }}",
+            "deleted": "Um Card é deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Card {{ id }}?"
+            },
+            "detail": {
+                "title": "Card"
+            },
+            "nome": "Nome",
+            "url": "Url",
+            "meta": "Meta",
+            "disposicao": "Disposicao",
+            "tipo": "Tipo",
+            "modo": "Modo",
+            "customize": "Customize"
+        }
+    }
+}

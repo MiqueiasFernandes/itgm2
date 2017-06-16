@@ -16,6 +16,7 @@
                 "customize": "Customize",
                 "terminal": "Terminal",
                 "script": "Script",
+                "card": "Card",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

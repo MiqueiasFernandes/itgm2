@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.itgm.domain.Script;
 
 import com.itgm.repository.ScriptRepository;
+import com.itgm.security.SecurityUtils;
 import com.itgm.web.rest.util.HeaderUtil;
 import com.itgm.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -32,7 +33,7 @@ public class ScriptResource {
     private final Logger log = LoggerFactory.getLogger(ScriptResource.class);
 
     private static final String ENTITY_NAME = "script";
-        
+
     private final ScriptRepository scriptRepository;
 
     public ScriptResource(ScriptRepository scriptRepository) {
@@ -91,7 +92,13 @@ public class ScriptResource {
     @Timed
     public ResponseEntity<List<Script>> getAllScripts(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Scripts");
-        Page<Script> page = scriptRepository.findAll(pageable);
+        Page<Script> page;
+
+        if(SecurityUtils.isCurrentUserInRole("ROLE_ADMIN"))
+            page = scriptRepository.findAll(pageable);
+        else
+            page = scriptRepository.findByUserIsCurrentUser(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/scripts");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

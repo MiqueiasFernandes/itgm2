@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.itgm.domain.Compartilhar;
 
 import com.itgm.repository.CompartilharRepository;
+import com.itgm.security.SecurityUtils;
 import com.itgm.service.jriaccess.Itgmrest;
 import com.itgm.web.rest.util.HeaderUtil;
 import com.itgm.web.rest.util.PaginationUtil;
@@ -93,7 +94,13 @@ public class CompartilharResource {
     @Timed
     public ResponseEntity<List<Compartilhar>> getAllCompartilhars(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Compartilhars");
-        Page<Compartilhar> page = compartilharRepository.findByDestinatarioIsCurrentUser(pageable);
+        Page<Compartilhar> page;
+
+        if(SecurityUtils.isCurrentUserInRole("ROLE_ADMIN"))
+            page = compartilharRepository.findAll(pageable);
+        else
+            page = compartilharRepository.findByDestinatarioIsCurrentUser(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/compartilhars");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

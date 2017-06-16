@@ -9,6 +9,7 @@ import { ItgmModeloExclusivoModule } from './modelo-exclusivo/modelo-exclusivo.m
 import { ItgmCustomizeModule } from './customize/customize.module';
 import { ItgmTerminalModule } from './terminal/terminal.module';
 import { ItgmScriptModule } from './script/script.module';
+import { ItgmCardModule } from './card/card.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -22,6 +23,7 @@ import { ItgmScriptModule } from './script/script.module';
         ItgmCustomizeModule,
         ItgmTerminalModule,
         ItgmScriptModule,
+        ItgmCardModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

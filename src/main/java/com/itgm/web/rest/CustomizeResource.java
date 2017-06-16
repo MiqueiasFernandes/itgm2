@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.itgm.domain.Customize;
 
 import com.itgm.repository.CustomizeRepository;
+import com.itgm.security.SecurityUtils;
 import com.itgm.web.rest.util.HeaderUtil;
 import com.itgm.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -91,7 +92,13 @@ public class CustomizeResource {
     @Timed
     public ResponseEntity<List<Customize>> getAllCustomizes(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Customizes");
-        Page<Customize> page = customizeRepository.findByUserIsCurrentUser(pageable);
+        Page<Customize> page;
+
+        if(SecurityUtils.isCurrentUserInRole("ROLE_ADMIN"))
+            page = customizeRepository.findAll(pageable);
+        else
+            page = customizeRepository.findByUserIsCurrentUser(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/customizes");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

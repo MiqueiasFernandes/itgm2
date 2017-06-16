@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.itgm.domain.Cenario;
 
 import com.itgm.repository.CenarioRepository;
+import com.itgm.security.SecurityUtils;
 import com.itgm.web.rest.util.HeaderUtil;
 import com.itgm.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -115,7 +116,13 @@ public class CenarioResource {
     @Timed
     public ResponseEntity<List<Cenario>> getAllCenarios(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Cenarios");
-        Page<Cenario> page = cenarioRepository.findByUserIsCurrentUser(pageable);
+        Page<Cenario> page;
+
+        if(SecurityUtils.isCurrentUserInRole("ROLE_ADMIN"))
+            page = cenarioRepository.findAll(pageable);
+        else
+            page = cenarioRepository.findByUserIsCurrentUser(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/cenarios");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

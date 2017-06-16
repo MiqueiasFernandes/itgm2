@@ -30,6 +30,8 @@ export class HomeService {
         return this.account.getEndereco()
             .map(
                 (endereco: string) => {
+                   //endereco = endereco.replace('http:', 'https:');
+                   //  endereco = endereco.replace(':80', '');
                     let array: string[][] = [];
                     let resolver: string[] = [];
                     cards.forEach((linha: string[]) => {
@@ -50,9 +52,9 @@ export class HomeService {
                                         tipo,
                                         cod[4], cod[2], cod[3], cod[4], cod[5]);
                                 cols.push(card.join(':'));
-                                if(tipo === 'rbokeh') {
-                                    resolver.push((endereco + url));
-                                }
+                                // if(tipo === 'rbokeh') {
+                                //     resolver.push((endereco + url));
+                                // }
                             }else {
                                 cols.push(coluna);
                             }

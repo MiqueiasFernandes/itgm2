@@ -1,0 +1,80 @@
+<div>
+    <h2>
+        <span jhiTranslate="itgmApp.card.home.title">Cards</span>
+        <button class="btn btn-primary float-right create-card" [routerLink]="['/', { outlets: { popup: ['card-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span  jhiTranslate="itgmApp.card.home.createLabel">
+            Create new Card
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="cards">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="nome"><span jhiTranslate="itgmApp.card.nome">Nome</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="url"><span jhiTranslate="itgmApp.card.url">Url</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="meta"><span jhiTranslate="itgmApp.card.meta">Meta</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="disposicao"><span jhiTranslate="itgmApp.card.disposicao">Disposicao</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="tipo"><span jhiTranslate="itgmApp.card.tipo">Tipo</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="modo"><span jhiTranslate="itgmApp.card.modo">Modo</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="customize.id"><span jhiTranslate="itgmApp.card.customize">Customize</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let card of cards ;trackBy: trackId">
+                <td><a [routerLink]="['../card', card.id ]">{{card.id}}</a></td>
+                <td>{{card.nome}}</td>
+                <td>{{card.url}}</td>
+                <td>{{card.meta}}</td>
+                <td>{{card.disposicao}}</td>
+                <td>{{card.tipo}}</td>
+                <td>{{card.modo}}</td>
+                <td>
+                    <div *ngIf="card.customize">
+                        <a [routerLink]="['../customize', card.customize?.id ]" >{{card.customize?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../card', card.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'card/'+ card.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'card/'+ card.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+        <div *ngIf="cards && cards.length">
+            <div class="row justify-content-center">
+                <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            </div>
+            <div class="row justify-content-center">
+                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+            </div>
+        </div>
+</div>
