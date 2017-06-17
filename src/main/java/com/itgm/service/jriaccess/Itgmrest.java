@@ -48,6 +48,18 @@ public class Itgmrest {
         return "http://" + getIP() + ":8099/temp/";
     }
 
+    public static boolean isServerAlive() {
+        try {
+            return new RestTemplate().getForObject(
+                "http://"
+                    + getIP()
+                    + local + "process/",
+                String.class).length() > 13;
+        }catch(Exception e){
+            return false;
+        }
+    }
+
     public static String getContent(String url, String subdir) {
         return new RestTemplate().getForObject(
             "http://"

@@ -97,42 +97,47 @@ export class CustomizeService {
             size: 1,
             sort: ['id']
         }).map((res: Response ) => {
-            const customize: Customize = res.json()[0];
-            if (!customize ) {
+
+                const customize: Customize = res.json() ?
+                    ( res.json().length ?
+                        ( res.json().length > 0 ?  res.json()[0] : null) : null ) :null;
+
                 this.principal.identity().then((account) => {
                     this.userService
                         .getUser(account)
                         .subscribe((user: User) => {
-                            const newCustomize: Customize =
-                                new Customize(
-                                    undefined, /// id
-                                    true, /// sidebar
-                                    'green', /// color
-                                    undefined, /// avatar
-                                    '', /// desktop
-                                    user, /// user
-                                    undefined, /// projeto
-                                    undefined, //// cenario
+                            if (!customize || (customize.user.id !== user.id)) {
+                                const newCustomize: Customize =
+                                    new Customize(
+                                        undefined,
+                                        true,
+                                        'green',
+                                        undefined,
+                                        '{\"entidades\": false}',
+                                        user,
+                                        undefined,
+                                        undefined,
+                                    );
+                                newCustomize.sidebar = true;
+                                this.create(newCustomize).subscribe(
+                                    (customizem: Customize) => {
+                                        alert('Sessão personalizada...');
+                                        this.eventManager
+                                            .broadcast({
+                                                name: 'customizeListModification',
+                                                content: 'OK'
+                                            });
+                                        return customizem;
+                                    },
+                                    // () => { alert('Houve um erro ao personalizar sessão!'); }
                                 );
-                            newCustomize.sidebar = true;
-                            this.create(newCustomize).subscribe(
-                                (customizem: Customize) => {
-                                    alert('Sessão personalizada...');
-                                    this.eventManager
-                                        .broadcast({
-                                            name: 'customizeListModification',
-                                            content: 'OK'
-                                        });
-                                    return customizem;
-                                },
-                                // () => { alert('Houve um erro ao personalizar sessão!'); }
-                            );
+                            }
                         });
                 });
-                return null;
-            }
-            return customize;
-        });
+
+                return customize;
+
+            });
     }
 
     public customizeSidebar(
@@ -203,7 +208,7 @@ export class CustomizeService {
                         customize.desktop,
                         customize.user,
                         projeto,
-                        undefined, ///////////////<------------ O PROJETO DEVE SER CUSTOMIZADO ANTES
+                        undefined,
                     );
                 newCustomize.sidebar = customize.sidebar;
                 this.update(newCustomize).subscribe(
@@ -243,7 +248,7 @@ export class CustomizeService {
         );
     }
 
-    public customizeDesktop(
+    private customizeDesktop(
         desktop: string,
     ) {
         this.getCustomize().subscribe(
@@ -268,6 +273,24 @@ export class CustomizeService {
                 );
             }
         );
+    }
+
+    public setMenuEntidades(visivel: boolean) {
+        this.getDesktop().subscribe((desktop: any)=>{
+            desktop.entidades  = visivel;
+            this.customizeDesktop(JSON.stringify(desktop));
+
+        });
+    }
+
+    public getDesktop(): Observable<any>{
+        return this.getCustomize()
+            .map((customize) => {
+                if(customize && customize.desktop && customize.desktop.length > 7) {
+                    return JSON.parse(customize.desktop);
+                }
+                return {entidades: false};
+            });
     }
 
 }

@@ -94,10 +94,10 @@ public class CustomizeResource {
         log.debug("REST request to get a page of Customizes");
         Page<Customize> page;
 
-        if(SecurityUtils.isCurrentUserInRole("ROLE_ADMIN"))
-            page = customizeRepository.findAll(pageable);
-        else
+        if(pageable.getPageSize() < 2 || !SecurityUtils.isCurrentUserInRole("ROLE_ADMIN"))
             page = customizeRepository.findByUserIsCurrentUser(pageable);
+        else
+            page = customizeRepository.findAll(pageable);
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/customizes");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

@@ -226,6 +226,6 @@ public class AccountResource {
     @GetMapping("/endereco")
     @Timed
     public ResponseEntity<String> getEndereco() {
-        return new ResponseEntity<String>("{\"endereco\":\"" + Itgmrest.getEndereco()+ "\"}", HttpStatus.OK);
+        return new ResponseEntity<String>("{\"endereco\":\"" + Itgmrest.getEndereco()+ "\",\"status\":" + Itgmrest.isServerAlive() + "}", HttpStatus.OK);
     }
 }

@@ -7,7 +7,7 @@ import {EventManager} from 'ng-jhipster';
 @Injectable()
 export class SidebarService {
 
-    private isSidebarOpen = false;
+    private isSidebarOpen = true;
     private isLockedSidebar = true;
 
     private observeSidebarStatus = new Subject<boolean>();
@@ -49,11 +49,6 @@ export class SidebarService {
     }
 
     public closeSidebar() {
-        /// Sidebar  / bloqueado
-        ///   V      &    V     => v => aberto
-        ///   V      &    f     => f => fechado
-        ///   f      &    V     => f => fechado
-        ///   f      &    f     => f => fechado
         this.isSidebarOpen =
             this.principal.isAuthenticated() &&
             this.isSidebarOpen &&

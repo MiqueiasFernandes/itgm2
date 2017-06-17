@@ -63,39 +63,21 @@ export class HomeComponent implements OnInit, AfterViewInit {
     windowRef :any;
     transitions = [];
 
-//     codigo = '             este é um codigo em r  {\
-//     for(i in 1:50) {\
-//     a <- function(c, d) {\
-//     print(k++);\
-// }\
-// \
-// }\
-// a=g+5;\
-// }';
-
 
     // btoa('string,;;\'\'``´´~~ ^ ^ fim da string\\//?????ª||º::..,,;;');
     ///2:card jh-card:texto:oi,2:card jh-card:texto:oi,2:card jh-card:texto:oi,2:card jh-card:texto:oi,2:card jh-card:texto:oi,2:card jh-card:texto:oi;3:card jh-card:texto:oi,3:card jh-card:texto:oi,3:card jh-card:texto:oi,3:card jh-card:texto:oi;4:card jh-card:texto:oi,4:card jh-card:texto:oi,4:card jh-card:texto:oi;6:card jh-card:texto:oi,6:card jh-card:texto:oi;12:card jh-card:texto:c3RyaW5nLDs7JydgYLS0fn4gXiBeIGZpbSBkYSBzdHJpbmdcLy8/Pz8/P6p8fLo6Oi4uLCw7Ow==
 
 
     constructor(
-        private http: Http,
         private jhiLanguageService: JhiLanguageService,
         private principal: Principal,
         private loginModalService: LoginModalService,
         private eventManager: EventManager,
-        private customizeService: CustomizeService,
         private homeService: HomeService,
-        public domSanitizer: DomSanitizer,
     ) {
         this.jhiLanguageService.setLocations(['home']);
         this.windowRef = homeService.getNativeWnidow();
-        // $(function () {
-        //     $('.card').draggable({ handle: 'h2'});
-        // })
-// this.iframe = this.domSanitizer
-//     .bypassSecurityTrustResourceUrl('http://179.109.9.94:8099/temp/nn78rmduuvim2nkipv60vji3v5.html');
-    }
+        }
 
     ngOnInit() {
         this.principal.identity().then((account) => {
@@ -106,6 +88,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
 
     }
+
     ngAfterViewInit() {
         // $(this.el.nativeElement).draggable();
     }

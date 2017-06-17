@@ -22,7 +22,7 @@ export class HomeService {
                     return [];
                 }
 
-                return this.getCards(this.getLinhas(cusom.desktop));
+                return [];//this.getCards(this.getLinhas(cusom.desktop));
             });
     }
 
@@ -118,7 +118,7 @@ export class HomeService {
             }
         });
 
-        this.customizeService.customizeDesktop(array.join(';'));
+       // this.customizeService.customizeDesktop(array.join(';'));
     }
 
 

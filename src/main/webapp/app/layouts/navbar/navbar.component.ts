@@ -6,10 +6,13 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { ProfileService } from '../profiles/profile.service'; // FIXME barrel doesn't work here
 import { JhiLanguageHelper, Principal, LoginModalService, LoginService } from '../../shared';
 
+import {EventManager} from 'ng-jhipster';
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
 import {Compartilhar} from '../../entities/compartilhar/compartilhar.model';
 import {ShareService} from '../share/share.service';
 import {SidebarService} from '../sidebar/sidebar.service';
+import {CustomizeService} from "../../entities/customize/customize.service";
+import {AccountService} from "../../shared/auth/account.service";
 
 @Component({
     selector: 'jhi-navbar',
@@ -28,17 +31,23 @@ export class NavbarComponent implements OnInit {
     version: string;
     compartilhamentos: Compartilhar[];
     bellN  = 0;
+    showEntites = false;
+    serverOnLine = false;
 
     constructor(
         private loginService: LoginService,
         private languageHelper: JhiLanguageHelper,
         private languageService: JhiLanguageService,
         private principal: Principal,
+        private eventManager: EventManager,
         private loginModalService: LoginModalService,
         private profileService: ProfileService,
         private router: Router,
         private sidebarService: SidebarService,
         private shareService: ShareService,
+        private customizeService: CustomizeService,
+        private account: AccountService,
+
     ) {
         this.version = DEBUG_INFO_ENABLED ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
@@ -63,10 +72,37 @@ export class NavbarComponent implements OnInit {
         this.shareService.consultarCompartilhamentos();
 
         this.sidebarService.openSidebar();
+
+        this.customizeService.getDesktop().subscribe((desktop: any) => {
+                this.showEntites = (desktop.entidades === true);
+        });
+
+        this.principal.identity().then((id) => {
+            if(!this.showEntites) {
+                if (id.authorities && (id.authorities.indexOf("ROLE_ADMIN") !== -1)){
+                    this.customizeService.setMenuEntidades(true);
+                }
+            }
+            this.sidebarService.openSidebar();
+        });
+
+        this.eventManager.subscribe('customizeListModification', () => {
+            this.customizeService.getDesktop().subscribe((desktop: any) => {
+                if (desktop) {
+                    this.showEntites = (desktop.entidades === true);
+                }
+            });
+        });
+
+        this.account.observeServerStatus$.subscribe((status) => {
+            this.serverOnLine = status;
+        });
+
     }
 
+
     changeLanguage(languageKey: string) {
-      this.languageService.changeLanguage(languageKey);
+        this.languageService.changeLanguage(languageKey);
     }
 
     collapseNavbar() {
@@ -96,6 +132,8 @@ export class NavbarComponent implements OnInit {
         return this.isAuthenticated() ? this.principal.getImageUrl() : null;
     }
 
+
+
     toogleSidebar() {
         this.sidebarService.toogleSidebar();
     }
@@ -107,5 +145,9 @@ export class NavbarComponent implements OnInit {
 
     consultar() {
         this.shareService.consultarCompartilhamentos();
+    }
+
+    getServerStatus() {
+        this.account.getEndereco().subscribe(() => {});
     }
 }
